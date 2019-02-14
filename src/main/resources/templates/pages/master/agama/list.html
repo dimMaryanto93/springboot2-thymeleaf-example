@@ -1,0 +1,42 @@
+<!doctype html>
+<html xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:th="http://www.thymeleaf.org"
+      layout:decorate="~{layout/layout}">
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0"/>
+    <meta http-equiv="X-UA-Compatible" content="ie=edge"/>
+    <title>Data Agama</title>
+</head>
+<body>
+<section layout:fragment="content" class="container">
+    <table class="table table-bordered table-condensed table-striped table-responsive table-hover">
+        <thead>
+        <tr>
+            <td>No</td>
+            <td>Nama</td>
+            <td>Description</td>
+            <td>Created Date</td>
+            <td>Created By</td>
+            <td>Last Modified Date</td>
+            <td>Last Modified By</td>
+        </tr>
+        </thead>
+        <tbody>
+        <!--/*@thymesVar id="list" type="java.util.List<com.maryanto.dimas.example.entity.Agama>"*/-->
+        <tr th:each="data, iter : ${list}">
+            <td th:text="${iter.count}">1</td>
+            <td th:text="${data.name}"></td>
+            <td th:text="${data.description}"></td>
+            <td th:text="${#dates.format(data.createdDate, 'dd MMM yyyy / hh:mm')}"></td>
+            <td th:text="${data.createdBy}"></td>
+            <td th:text="${#dates.format(data.lastUpdateDate, 'dd MMM yyyy / hh:mm')}"></td>
+            <td th:text="${data.lastUpdateBy}"></td>
+        </tr>
+        </tbody>
+    </table>
+</section>
+
+</body>
+</html>

@@ -1,6 +1,7 @@
 package com.maryanto.dimas.example.repository;
 
 import com.maryanto.dimas.example.entity.Agama;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
@@ -18,19 +19,20 @@ import java.util.List;
 @Transactional(readOnly = true)
 public class AgamaDao {
 
+    @Autowired
     private NamedParameterJdbcTemplate parameterJdbcTemplate;
 
     public Agama findById(Integer id) throws EmptyResultDataAccessException {
         MapSqlParameterSource params = new MapSqlParameterSource();
         params.addValue("agamaId", id);
 
-        String query = "select id, name, description, created_date, created_by, last_update_date, last_update_by from agama where id = :agamaId";
+        String query = "select id, name, description, create_by, create_by, last_update_date, last_update_by from master_agama where id = :agamaId";
         Agama agama = this.parameterJdbcTemplate.queryForObject(query, params, new AgamaRowMapper());
         return agama;
     }
 
     public List<Agama> findAll() {
-        String query = "select id, name, description, created_date, created_by, last_update_date, last_update_by from agama";
+        String query = "select id, name, description, create_date, create_by, last_update_date, last_update_by from master_agama";
         List<Agama> list = this.parameterJdbcTemplate.query(query, new AgamaRowMapper());
         return list;
     }
@@ -44,7 +46,7 @@ public class AgamaDao {
         params.addValue("description", value.getDescription());
         params.addValue("createdBy", value.getCreatedBy());
 
-        String query = "insert into agama(name, description, created_by) values (:name, :description, :createdBy)";
+        String query = "insert into master_agama(name, description, create_by) values (:name, :description, :createdBy)";
         int rowUpdated = this.parameterJdbcTemplate.update(query, params, keyHolder);
         Long primaryKey = (Long) keyHolder.getKey();
         return findById(primaryKey.intValue());
@@ -58,7 +60,7 @@ public class AgamaDao {
         params.addValue("updatedBy", value.getLastUpdateBy());
         params.addValue("id", value.getId());
 
-        String query = "update agama set name = :name, description = :description, last_update_date = now(), last_update_by = :updatedBy where id = :id";
+        String query = "update master_agama set name = :name, description = :description, last_update_date = now(), last_update_by = :updatedBy where id = :id";
         this.parameterJdbcTemplate.update(query, params);
         return findById(value.getId());
     }
@@ -67,7 +69,7 @@ public class AgamaDao {
     public boolean removeById(Integer id) {
         MapSqlParameterSource params = new MapSqlParameterSource();
         params.addValue("id", id);
-        String query = "delete from agama where id = :id";
+        String query = "delete from master_agama where id = :id";
         return this.parameterJdbcTemplate.update(query, params) >= 1;
     }
 
@@ -78,8 +80,8 @@ public class AgamaDao {
                     rs.getInt("id"),
                     rs.getString("name"),
                     rs.getString("description"),
-                    rs.getTimestamp("created_date"),
-                    rs.getString("created_by"),
+                    rs.getTimestamp("create_date"),
+                    rs.getString("create_by"),
                     rs.getTimestamp("last_update_date"),
                     rs.getString("last_update_by")
             );
